@@ -1,6 +1,6 @@
 import requests
 
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 from urllib.parse import quote as uriquote
 
 
@@ -10,8 +10,8 @@ class Route:
   def __init__(self, method: str, path: str, **parameters: Any) -> None:
     self.path: str = path
     self.method: str = method.upper()
-    url = self.BASE + self.path
-    self.headers = parameters.pop('headers', {}) or {}
+    url: str = self.BASE + self.path
+    self.headers: Dict[str, str] = parameters.pop('headers', {}) or {}
 
     if parameters:
         url = url.format_map({k: uriquote(v) if isinstance(v, str) else v for k, v in parameters.items()})
@@ -23,3 +23,28 @@ class Route:
       return resp.json()
 
     return resp
+
+class Language:
+  def __init__(self, id: str, name: str, exts: List[str], monaco: str) -> None:
+    self.__id: str                 =       id
+    self.__name: str               =     name
+    self.__extensions: List[str]   =     exts
+    self.__monaco: str             =   monaco
+
+  @property
+  def id(self) -> str:
+    return self.__id
+
+  @property
+  def name(self) -> str:
+    return self.__name
+
+  @property
+  def monaco(self) -> str:
+    return self.__monaco
+
+  @property
+  def extensions(self) -> List[str]:
+    return self.__extensions
+
+
