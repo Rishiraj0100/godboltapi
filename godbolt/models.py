@@ -1,8 +1,21 @@
 import requests
 
-from typing import Any, Dict, List, Union
+from typing import (
+  Any,
+  Dict,
+  List,
+  Union,
+  TypeVar
+)
 from urllib.parse import quote as uriquote
 
+
+__all__ = (
+  "Route",
+  "Language"
+)
+
+LT = TypeVar('LT', bound='Language')
 
 class Route:
   BASE: str = "https://godbolt.org/api"
@@ -17,7 +30,7 @@ class Route:
         url = url.format_map({k: uriquote(v) if isinstance(v, str) else v for k, v in parameters.items()})
     self.url: str = url
 
-  def request(self, *, json: bool = True) -> Union[Dict[str, Union[str, int]], requests.Response]:
+  def request(self, *, json: bool = True) -> Union[dict, requests.Response]:
     resp: requests.Response = requests.request(self.method, self.url, headers=self.headers)
     if json:
       return resp.json()
@@ -25,7 +38,7 @@ class Route:
     return resp
 
 class Language:
-  def __init__(self, id: str, name: str, exts: List[str], monaco: str) -> None:
+  def __init__(self, *, id: str, name: str, exts: List[str], monaco: str) -> None:
     self.__id: str                 =       id
     self.__name: str               =     name
     self.__extensions: List[str]   =     exts
@@ -47,4 +60,38 @@ class Language:
   def extensions(self) -> List[str]:
     return self.__extensions
 
+  @classmethod
+  def from_dict(cls, d: dict) -> LT:
+    self = cls(
+      id=d['id'],
+      name=d["name"],
+      exts=d["extensions"],
+      monaco=d["monaco"]
+    )
+
+    return self
+
+  def to_dict(self) -> dict:
+    attrs: List[str] = ["extensions", "id", "name", "monaco"]
+    ret: dict = {}
+    for attr in attrs:
+      ret[attr] = eval('self.{attr}'.format(attr=attr))
+
+    return dict
+
+  def __repr__(self) -> str:
+    resp = 'Language(id={id}, name={name}, exts={exts}, monaco={monaco})'
+    ret = resp.format(id=self.id, name=self.name, exts=self.extensions, monaco=self.monaco)
+    return ret
+
+  def __eq__(self, other: Union[LT, str, Any]) -> bool:
+    if isinstance(other, Language):
+      return other.id == self.id and other.name == self.name
+    if isinstance(other, str):
+      return self.id == other or self.name == other
+
+    return False
+
+  def __ne__(self, other: Union[LT, str, Any]) -> bool:
+    return not self.__eq__(other)
 
