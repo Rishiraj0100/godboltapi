@@ -9,7 +9,7 @@ class Godbolt:
     self.__languages: List[Language] = []
 
   def init(self,) -> None:
-    languages = Route('GET', "/languages", headers=headers).request()
+    languages = Route('GET', "/languages", headers=self.__headers).request()
     for language in languages:
       self.__languages.append(Language.from_dict(language))
 
