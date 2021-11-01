@@ -1,7 +1,7 @@
 import types
 
 from .models import *
-from typing import Dict, List, Union, Mapping
+from typing import Any, Dict, List, Union, Mapping
 
 
 class Godbolt:
