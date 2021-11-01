@@ -1,4 +1,5 @@
 import requests
+import asyncio
 
 from typing import (
   Any,
@@ -12,7 +13,8 @@ from urllib.parse import quote as uriquote
 
 __all__ = (
   "Route",
-  "Language"
+  "Language",
+  "LanguageStream"
 )
 
 LT = TypeVar('LT', bound='Language')
@@ -48,6 +50,24 @@ class Route:
       return resp.json()
 
     return resp
+
+class LanguageStream(list):
+  def __init__(self, *args: Any, **kwargs: Any) -> None:
+    super().__init__(*args, **kwargs)
+    asyncio.get_event_loop().create_task(self.__check_integrity())
+    
+  def __contains__(self, other: Union[str, LT, Any]) -> bool:
+    for lang in self:
+      if lang == other:
+        return True
+
+    return False
+
+  async def __check_integrity(self) -> None:
+    while True:
+      for lang in self:
+        assert isinstance(lang, Language), "All attributes of this stream should be instance of Language not {lang.__class__!r}"
+      await asyncio.sleep(5)
 
 class Language:
   def __init__(self, *, id: str, name: str, exts: List[str], monaco: str) -> None:
