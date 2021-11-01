@@ -70,11 +70,11 @@ class LanguageStream(list):
       await asyncio.sleep(5)
 
 class Language:
-  def __init__(self, *, id: str, name: str, exts: List[str], monaco: str) -> None:
-    self.__id: str                 =       id
-    self.__name: str               =     name
-    self.__extensions: List[str]   =     exts
-    self.__monaco: str             =   monaco
+  def __init__(self, *, id: str, name: str, extensions: List[str], monaco: str) -> None:
+    self.__id: str                 =           id
+    self.__name: str               =          name
+    self.__monaco: str             =        monaco
+    self.__extensions: List[str]   =    extensions
 
   @property
   def id(self) -> str:
@@ -97,7 +97,7 @@ class Language:
     self = cls(
       id=d['id'],
       name=d["name"],
-      exts=d["extensions"],
+      extensions=d["extensions"],
       monaco=d["monaco"]
     )
 
@@ -112,7 +112,7 @@ class Language:
     return dict
 
   def __repr__(self) -> str:
-    resp = 'Language(id="{id}", name="{name}", exts={exts}, monaco="{monaco}")'
+    resp = 'Language(id="{id}", name="{name}", extensions={exts}, monaco="{monaco}")'
     ret = resp.format(id=self.id, name=self.name, exts=self.extensions, monaco=self.monaco)
     return ret
 
