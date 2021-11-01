@@ -42,7 +42,7 @@ class Route:
         url = url.format_map({k: uriquote(v) if isinstance(v, str) else v for k, v in parameters.items()})
     self.url: str = url
 
-  def request(self, *, makejson: bool = True) -> Union[dict, requests.Response]:
+  def request(self, *, json: bool = True) -> Union[dict, requests.Response]:
     resp: requests.Response = requests.request(self.method, self.url, headers=self.headers, **self.kw)
     if json:
       return resp.json()
