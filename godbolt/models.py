@@ -75,6 +75,7 @@ class Language:
     self.__name: str               =          name
     self.__monaco: str             =        monaco
     self.__extensions: List[str]   =    extensions
+    self.compilers = []
 
   @property
   def id(self) -> str:
