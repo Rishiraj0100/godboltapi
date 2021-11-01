@@ -80,7 +80,7 @@ class Language:
     return dict
 
   def __repr__(self) -> str:
-    resp = 'Language(id={id}, name={name}, exts={exts}, monaco={monaco})'
+    resp = 'Language(id="{id}", name="{name}", exts={exts}, monaco="{monaco}")'
     ret = resp.format(id=self.id, name=self.name, exts=self.extensions, monaco=self.monaco)
     return ret
 
@@ -94,4 +94,7 @@ class Language:
 
   def __ne__(self, other: Union[LT, str, Any]) -> bool:
     return not self.__eq__(other)
+
+  def __str__(self) -> bool:
+    return self.name
 
