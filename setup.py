@@ -3,11 +3,22 @@ import random
 from setuptools import setup
 
 v = "0.0.1a"
-ls = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-for i in range(5):
-  v += ls[random.randint(0, len(ls)-1)] # randomized version per install
-
+if version.endswith(('a', 'b', 'rc')):
+    # append version identifier based on commit count
+    try:
+        import subprocess
+        p = subprocess.Popen(['git', 'rev-list', '--count', 'HEAD'],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        if out:
+            version += out.decode('utf-8').strip()
+        p = subprocess.Popen(['git', 'rev-parse', '--short', 'HEAD'],
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        if out:
+            version += '+g' + out.decode('utf-8').strip()
+    except Exception:
+        pass
 setup(
   name="GodBolt",
   packages=["godbolt"],
