@@ -8,7 +8,7 @@ class Godbolt:
   def __init__(self, headers: Dict[str, str] = {}) -> None:
     headers['Accept'] = "application/json"
     self.__headers: Dict[str, str] = headers
-    self.__languages: List[Language] = []
+    self.__languages: LanguageStream = LanguageStream()
 
   def init(self,) -> None:
     languages = Route('GET', "/languages", headers=self.__headers).request()
@@ -25,7 +25,7 @@ class Godbolt:
         language.compilers.append(compiler)
 
   @property
-  def languages(self) -> List[Language]:
+  def languages(self) -> LanguageStream:
     return self.__languages.copy()
 
   @property
