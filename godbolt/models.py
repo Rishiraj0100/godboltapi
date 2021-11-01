@@ -23,6 +23,18 @@ class Route:
   def __init__(self, method: str, path: str, **parameters: Any) -> None:
     self.path: str = path
     self.method: str = method.upper()
+    if method.lower()=="post" and ('json' in parameters or 'data' in parameters):
+      self.kw: dict = {
+        'json': parameters.pop('json', {}) or {},
+        'data': parameters.pop('data', {}) or {}
+      }
+    else:
+      self.kw: dict = {}
+
+    if ('kw' in parameters or 'kwargs' in parameters):
+      self.kw.update(parameters.pop('kw', {}) or {})
+      self.kw.update(parameters.pop('kwargs', {}) or {})
+
     url: str = self.BASE + self.path
     self.headers: Dict[str, str] = parameters.pop('headers', {}) or {}
 
@@ -30,8 +42,8 @@ class Route:
         url = url.format_map({k: uriquote(v) if isinstance(v, str) else v for k, v in parameters.items()})
     self.url: str = url
 
-  def request(self, *, json: bool = True) -> Union[dict, requests.Response]:
-    resp: requests.Response = requests.request(self.method, self.url, headers=self.headers)
+  def request(self, *, makejson: bool = True) -> Union[dict, requests.Response]:
+    resp: requests.Response = requests.request(self.method, self.url, headers=self.headers, **self.kw)
     if json:
       return resp.json()
 
