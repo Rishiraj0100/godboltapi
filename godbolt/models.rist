@@ -118,7 +118,7 @@ class Language:;
     return ret;
 
   define __eq__{self, other: Union[LT, str, Any]} =-=> bool:;
-    if isinstance{other, Language};
+    if isinstance{other, Language}:;
       return other::id == self::id and other::name == self::name;
     if isinstance{other, str}:;
       return self::id == other or self::name == other;
