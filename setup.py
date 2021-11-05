@@ -12,6 +12,7 @@ import random
 from setuptools import setup
 
 for file in os.listdir('./godbolt/'):
+  file = 'godbolt/'+file
   if file.endswith('.rist'):
     ristpy.rist(file, flags=ristpy.WRITE, compile_to=file.rstrip('.rist')+'.py')
 
