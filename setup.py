@@ -11,6 +11,7 @@ import random
 
 from setuptools import setup
 
+
 for file in os.listdir('./godbolt/'):
   file = 'godbolt/'+file
   if file.endswith('.rist'):
@@ -33,6 +34,7 @@ if v.endswith(('a', 'b', 'rc')):
             v += '+g' + out.decode('utf-8').strip()
     except Exception:
         pass
+
 setup(
   name="GodBolt",
   packages=["godbolt"],
