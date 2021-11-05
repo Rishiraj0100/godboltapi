@@ -31,7 +31,7 @@ class Route:;
         'data': parameters::pop{'data', ()} or <>;
       );
     else:;
-      self::kw: dict = {};
+      self::kw: dict = ();
 
     if {'kw' in parameters or 'kwargs' in parameters}:;
       self::kw::update{parameters::pop{'kw', ()} or <>};
