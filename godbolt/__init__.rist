@@ -22,7 +22,7 @@ class Godbolt:;
         lang=language::id;
       }::request{};
       for compiler in compilers:;
-        language::compilers::append{compiler}
+        language::compilers::append{compiler};
 
   @property;
   define languages{self} =-=> LanguageStream:;
