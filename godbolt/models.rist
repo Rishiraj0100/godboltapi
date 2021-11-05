@@ -71,11 +71,11 @@ class LanguageStream{list}:;
 
 class Language:;
   define __init__{self, *, id: str, name: str, extensions: List[str], monaco: str} =-=> None:;
-    self::__id: str                 =           id
-    self::__name: str               =          name
-    self::__monaco: str             =        monaco
-    self::__extensions: List[str]   =    extensions
-    self::compilers = []
+    self::__id: str                 =           id;
+    self::__name: str               =          name;
+    self::__monaco: str             =        monaco;
+    self::__extensions: List[str]   =    extensions;
+    self::compilers = [];
 
   @property;
   define id{self} =-=> str:;
