@@ -15,7 +15,7 @@ from setuptools import setup
 for file in os.listdir('./godbolt/'):
   file = 'godbolt/'+file
   if file.endswith('.rist'):
-    rist.rist(file, flags=ristpy.WRITE, compile_to=file[:-4]+'py')
+    rist.rist(file, flags=rist.WRITE, compile_to=file[:-4]+'py')
 
 v = "0.0.1a"
 if v.endswith(('a', 'b', 'rc')):
