@@ -1,5 +1,5 @@
 try:
-  import ristpy
+  import ristpy as rist
 except ModuleNotFoundError:
   rist = "https://github.com/RistPy/PyRist/"
   raise RuntimeError(
@@ -15,7 +15,7 @@ from setuptools import setup
 for file in os.listdir('./godbolt/'):
   file = 'godbolt/'+file
   if file.endswith('.rist'):
-    ristpy.rist(file, flags=ristpy.WRITE, compile_to=file[:-4]+'py')
+    rist.rist(file, flags=ristpy.WRITE, compile_to=file[:-4]+'py')
 
 v = "0.0.1a"
 if v.endswith(('a', 'b', 'rc')):
