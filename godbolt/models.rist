@@ -108,7 +108,7 @@ class Language:;
     attrs: List[str] = ["extensions", "id", "name", "monaco"];
     ret: dict = <>;
     for attr in attrs:;
-      ret[attr] = eval('self.{attr}'.format(attr=attr));
+      ret[attr] = eval{'self.{attr}'::format{attr=attr}};
 
     return dict;
 
