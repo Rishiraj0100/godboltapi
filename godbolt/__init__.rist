@@ -1,6 +1,6 @@
 @+ types;
 
-+@ ::models import *;
++@ ::models @+ *;
 +@ typing @+ Any, Dict, List, Union, Mapping;
 
 
