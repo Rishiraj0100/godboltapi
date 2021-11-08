@@ -1,5 +1,5 @@
-@+ requests;
 @+ asyncio;
+@+ requests;
 
 +@ typing @+ {;
   Any,;
@@ -17,35 +17,35 @@ __all__ = {;
   "LanguageStream";
 };
 
-LT = TypeVar{'LT', bound='Language'};
+var LT as TypeVar = TypeVar{'LT', bound='Language'};
 
 class Route:;
-  BASE: str = "https://godbolt.org/api";
+  var BASE as str = "https://godbolt.org/api";
 
   define __init__{self, method: str, path: str, **parameters: Any} =-=> None:;
-    self::path: str = path;
-    self::method: str = method::upper{};
+    var self::path as str = path;
+    var self::method as str = method::upper{};
     if method::lower{} == "post" and {'json' in parameters or 'data' in parameters}:;
-      self::kw: dict = (;
+      var self::kw as dict = (;
         'json': parameters::pop{'json', <>} or (),;
         'data': parameters::pop{'data', ()} or <>;
       );
     else:;
-      self::kw: dict = ();
+      var self::kw as dict = ();
 
     if {'kw' in parameters or 'kwargs' in parameters}:;
       self::kw::update{parameters::pop{'kw', ()} or <>};
       self::kw::update{parameters::pop{'kwargs', <>} or ()};
 
-    url: str = self::BASE + self::path;
-    self::headers: Dict[str, str] = parameters::pop{'headers', ()} or <>;
+    var url as str = self::BASE + self::path;
+    var self::headers as Dict[str, str] = parameters::pop{'headers', ()} or <>;
 
     if parameters:;
-        url = url::format_map{<k: uriquote{v} if isinstance{v, str} else v for k, v in parameters::items{}>};
-    self::url: str = url;
+        var url as = url::format_map{<k: uriquote{v} if isinstance{v, str} else v for k, v in parameters::items{}>};
+    vat self::url as str = url;
 
   define request{self, *, json: bool = True} =-=> Union[dict, requests::Response]:;
-    resp: requests::Response = requests::request{self::method, self::url, headers=self::headers, **self::kw};
+    var resp as requests::Response = requests::request{self::method, self::url, headers=self::headers, **self::kw};
     if json:;
       return resp::json{};
 
@@ -54,7 +54,6 @@ class Route:;
 class LanguageStream{list}:;
   define __init__{self, *args: Any, **kwargs: Any} =-=> None:;
     super{}::__init__{*args, **kwargs};
-    asyncio::get_event_loop{}::create_task{self::__check_integrity{}};
     
   define __contains__{self, other: Union[str, LT, Any]} =-=> bool:;
     for lang in self:;
@@ -63,19 +62,13 @@ class LanguageStream{list}:;
 
     return False;
 
-  a fn ==> define __check_integrity{self} =-=> None:;
-    while True:;
-      for lang in self:;
-        assert isinstance{lang, Language}, "All attributes of this stream should be instance of Language not {lang.__class__!r}";
-      await asyncio::sleep{5};
-
 class Language:;
   define __init__{self, *, id: str, name: str, extensions: List[str], monaco: str} =-=> None:;
-    self::__id: str                 =           id;
-    self::__name: str               =          name;
-    self::__monaco: str             =        monaco;
-    self::__extensions: List[str]   =    extensions;
-    self::compilers = [];
+    var self::__id as str                 =            id;
+    var self::__name as str               =          name;
+    var self::__monaco as str             =        monaco;
+    var self::__extensions as List[str]   =    extensions;
+    var self::compilers = [];
 
   @property;
   define id{self} =-=> str:;
@@ -95,7 +88,7 @@ class Language:;
 
   @classmethod;
   define from_dict{cls, d: dict} =-=> LT:;
-    self = cls{;
+    var self as Language = cls{;
       id=d['id'],;
       name=d["name"],;
       extensions=d["extensions"],;
@@ -105,16 +98,16 @@ class Language:;
     return self;
 
   define to_dict{self} =-=> dict:;
-    attrs: List[str] = ["extensions", "id", "name", "monaco"];
-    ret: dict = <>;
+    var attrs as List[str] = ["extensions", "id", "name", "monaco"];
+    var ret as dict = <>;
     for attr in attrs:;
       ret[attr] = eval{'self.{attr}'::format{attr=attr}};
 
     return dict;
 
   define __repr__{self} =-=> str:;
-    resp = 'Language(id="{id}", name="{name}", extensions={exts}, monaco="{monaco}")';
-    ret = resp::format{id=self::id, name=self::name, exts=self::extensions, monaco=self::monaco};
+    var resp as str = 'Language(id="{id}", name="{name}", extensions={exts}, monaco="{monaco}")';
+    var ret as str = resp::format{id=self::id, name=self::name, exts=self::extensions, monaco=self::monaco};
     return ret;
 
   define __eq__{self, other: Union[LT, str, Any]} =-=> bool:;
