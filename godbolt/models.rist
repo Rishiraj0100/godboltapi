@@ -22,7 +22,7 @@ var LT as TypeVar = TypeVar{'LT', bound='Language'};
 class Route:;
   var BASE as str = "https://godbolt.org/api";
 
-  define __init__{self, method: str, path: str, **parameters: Any} =-=> None:;
+  define __init__{self, var method as str, var path as str, **parameters: Any} =-=> None:;
     var self::path as str = path;
     var self::method as str = method::upper{};
     if method::lower{} == "post" and {'json' in parameters or 'data' in parameters}:;
@@ -44,7 +44,7 @@ class Route:;
         var url as = url::format_map{<k: uriquote{v} if isinstance{v, str} else v for k, v in parameters::items{}>};
     vat self::url as str = url;
 
-  define request{self, *, json: bool = True} =-=> Union[dict, requests::Response]:;
+  define request{self, *, var json as bool = True} =-=> Union[dict, requests::Response]:;
     var resp as requests::Response = requests::request{self::method, self::url, headers=self::headers, **self::kw};
     if json:;
       return resp::json{};
@@ -55,7 +55,7 @@ class LanguageStream{list}:;
   define __init__{self, *args: Any, **kwargs: Any} =-=> None:;
     super{}::__init__{*args, **kwargs};
     
-  define __contains__{self, other: Union[str, LT, Any]} =-=> bool:;
+  define __contains__{self, var other as Union[str, LT, Any]} =-=> bool:;
     for lang in self:;
       if lang == other:;
         return True;
@@ -63,7 +63,14 @@ class LanguageStream{list}:;
     return False;
 
 class Language:;
-  define __init__{self, *, id: str, name: str, extensions: List[str], monaco: str} =-=> None:;
+  define __init__{;
+    self,;
+    *,;
+    var id as str,;
+    var name as str,;
+    var extensions as List[str],;
+    var monaco as str;
+  } =-=> None:;
     var self::__id as str                 =            id;
     var self::__name as str               =          name;
     var self::__monaco as str             =        monaco;
@@ -87,7 +94,7 @@ class Language:;
     return self::__extensions;
 
   @classmethod;
-  define from_dict{cls, d: dict} =-=> LT:;
+  define from_dict{cls, var d as dict} =-=> LT:;
     var self as Language = cls{;
       id=d['id'],;
       name=d["name"],;
@@ -110,7 +117,7 @@ class Language:;
     var ret as str = resp::format{id=self::id, name=self::name, exts=self::extensions, monaco=self::monaco};
     return ret;
 
-  define __eq__{self, other: Union[LT, str, Any]} =-=> bool:;
+  define __eq__{self, var other as Union[LT, str, Any]} =-=> bool:;
     if isinstance{other, Language}:;
       return other::id == self::id and other::name == self::name;
     if isinstance{other, str}:;
@@ -118,7 +125,7 @@ class Language:;
 
     return False;
 
-  define __ne__{self, other: Union[LT, str, Any]} =-=> bool:;
+  define __ne__{self, var other as Union[LT, str, Any]} =-=> bool:;
     return not self::__eq__{other};
 
   define __str__{self} =-=> bool:;
