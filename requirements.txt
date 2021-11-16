@@ -1,0 +1,1 @@
+PyRist @ git+https://github.com/RistPy/PyRist@stable
