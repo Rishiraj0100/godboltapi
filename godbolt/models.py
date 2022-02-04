@@ -62,6 +62,10 @@ class LanguageStream(list):
     super().__init__(*args, **kwargs)
     self.__dat = {}
     asyncio.get_event_loop().create_task(self.__check_integrity())
+    for i in ["__getitem__","__delitem__","__setitem__","get"]:
+      def _(self, a, *args,**kwargs):
+        return getattr(self.__dat, i)(a.lower(),*args,**kwargs)
+      setattr(self,i,_)
     
   def __contains__(self, other: Union[str, LT, Any]) -> bool:
     for lang in self:
@@ -84,17 +88,6 @@ class LanguageStream(list):
     if language in self:
       del self[language.name if isinstance(language, Language) else language]
     super().remove(language)
-
-  def __getattr__(self, attr, default=None):
-    if hasattr(self, attr) and not attr.startswith("_"): return eval("self."+attr)
-
-    if hasattr(self.__dat, attr) and callable(getattr(self.__dat,attr)):
-      def _(self, a, *args,**kwargs):
-        return getattr(self.__dat, attr)(a.lower(),*args,**kwargs)
-      return _
-    elif hasattr(self.__dat, attr): return getattr(self.__dat, attr)
-
-    return default
 
 class Language:
   def __init__(self, *, id: str, name: str, extensions: List[str], monaco: str) -> None:
