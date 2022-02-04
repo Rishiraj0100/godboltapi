@@ -34,6 +34,9 @@ class Route:
     else:
       self.kw: dict = {}
 
+    for k,v in self.kw.items():
+      if not v: self.kw.pop(k)
+ 
     if ('kw' in parameters or 'kwargs' in parameters):
       self.kw.update(parameters.pop('kw', {}) or {})
       self.kw.update(parameters.pop('kwargs', {}) or {})
