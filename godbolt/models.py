@@ -34,7 +34,7 @@ class Route:
     else:
       self.kw: dict = {}
 
-    for k,v in self.kw.items():
+    for k,v in self.kw.copy().items():
       if not v: self.kw.pop(k)
  
     if ('kw' in parameters or 'kwargs' in parameters):
