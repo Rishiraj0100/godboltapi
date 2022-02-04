@@ -42,3 +42,19 @@ class Godbolt:
         return lang
 
     return None
+
+  async def execute(self, code: str, language=None, compiler=None, stdin = None, libraries: List[Dict[str, str]]=[],):
+    if not language and not compiler: compiler, language = self.get_language('python').compilers[0]["id"],"python"
+    elif not compiler: compiler = self.get_language(language).compilers[0]["id"]
+    elif language and compiler:
+      try: compiler = self.get_language(language).get_compiler(compiler)["id"]
+      except: raise ValueError(f"Compiler {compiler} for language {language} not found!")
+
+    data = {"source": code,"compiler": compiler,"executeParameters": {}}
+
+    if stdin: data["executeParameters"]["stdin"] = stdin
+    if libraries: data["libraries"] = libraries
+
+    resp = await Route('post',"/compiler/{compiler}/compile", compiler=compiler,json=data).request()
+    return {"output": resp["stdout"]["text"], "error": resp["stdin"]["text"]}
+    
