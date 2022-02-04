@@ -50,9 +50,9 @@ class Godbolt:
       try: compiler = self.get_language(language).get_compiler(compiler)["id"]
       except: raise ValueError(f"Compiler {compiler} for language {language} not found!")
 
-    data = {"source": code,"compiler": compiler,"executeParameters": {}}
+    data = {"source": code,"compiler": compiler,"options": {"executeParameters": {}}}
 
-    if stdin: data["executeParameters"]["stdin"] = stdin
+    if stdin: data["options"]["executeParameters"]["stdin"] = stdin
     if libraries: data["libraries"] = libraries
 
     resp = await Route('post',"/compiler/{compiler}/compile", compiler=compiler,json=data).request()
