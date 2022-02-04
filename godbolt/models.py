@@ -62,11 +62,7 @@ class LanguageStream(list):
     super().__init__(*args, **kwargs)
     self.__dat = {}
     asyncio.get_event_loop().create_task(self.__check_integrity())
-    for i in ["__getitem__","__delitem__","__setitem__","get"]:
-      def _(self, a, *args,**kwargs):
-        return getattr(self.__dat, i)(a.lower(),*args,**kwargs)
-      setattr(self,i,_)
-    
+
   def __contains__(self, other: Union[str, LT, Any]) -> bool:
     for lang in self:
       if lang == other:
@@ -88,6 +84,12 @@ class LanguageStream(list):
     if language in self:
       del self[language.name if isinstance(language, Language) else language]
     super().remove(language)
+
+  __getitem__ = lambda self,attr: self.__dat[attr]
+  def get(self, attr, default=None): return self.__dat.get(attr, default)
+  def __setitem__(self, k,v): return self.__dat[k]=v
+  def __delitem__(self,k): return self.__dat.__delitem__(k)
+
 
 class Language:
   def __init__(self, *, id: str, name: str, extensions: List[str], monaco: str) -> None:
