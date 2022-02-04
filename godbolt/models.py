@@ -87,7 +87,7 @@ class LanguageStream(list):
 
   __getitem__ = lambda self,attr: self.__dat[attr]
   def get(self, attr, default=None): return self.__dat.get(attr, default)
-  def __setitem__(self, k,v): return self.__dat[k]=v
+  def __setitem__(self, k,v): return self.__dat.__setitem__(k,v)
   def __delitem__(self,k): return self.__dat.__delitem__(k)
 
 
