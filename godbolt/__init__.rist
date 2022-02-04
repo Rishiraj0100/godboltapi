@@ -1,40 +1,40 @@
-@+ types;
+import types
 
-+@ ::models @+ *;
-+@ typing @+ Any, Dict, List, Union, Mapping;
+from .models import *
+from typing import Any, Dict, List, Union, Mapping
 
 
-class Godbolt:;
-  define __init__{self, var headers as Dict[str, str] = <>} =-=> None:;
-    headers['Accept'] = "application/json";
-    var self::__headers as Dict[str, str] = headers;
-    var self::__languages as LanguageStream = LanguageStream{};
+class Godbolt:
+  def __init__(self, headers: Dict[str, str] = {}) -> None:
+    headers['Accept'] = "application/json"
+    self.__headers: Dict[str, str] = headers
+    self.__languages: LanguageStream = LanguageStream()
 
-  define init{self,} =-=> None:;
-    var languages as List[dict] = Route{'GET', "/languages", headers=self::__headers}::request{};
-    for language in languages:;
-      self::__languages::append{Language::from_dict{language}};
-    for language in self::languages:;
-      var compilers as List[dict] = Route{;
-        'get',;
-        '/compilers/{lang}',;
-        headers=self::__headers,;
-        lang=language::id;
-      }::request{};
-      for compiler in compilers:;
-        language::compilers::append{compiler};
+  def init(self,) -> None:
+    languages = Route('GET', "/languages", headers=self.__headers).request()
+    for language in languages:
+      self.__languages.append(Language.from_dict(language))
+    for language in self.languages:
+      compilers = Route(
+        'get',
+        '/compilers/{lang}',
+        headers=self.__headers,
+        lang=language.id
+      ).request()
+      for compiler in compilers:
+        language.compilers.append(compiler)
 
-  @property;
-  define languages{self} =-=> LanguageStream:;
-    return self::__languages::copy{};
+  @property
+  def languages(self) -> LanguageStream:
+    return self.__languages.copy()
 
-  @property;
-  define headers{self} =-=> Mapping[str, str]:;
-    return types::MappingProxyType{self::__headers};
+  @property
+  def headers(self) -> Mapping[str, str]:
+    return types.MappingProxyType(self.__headers)
 
-  define get_language{self, var language as Union[str, Language, Any]} =-=> Union[None, Language]:;
-    for lang in self::languages:;
-      if lang == language:;
-        return lang;
+  def get_language(self, language: Union[str, Language, Any]) -> Union[None, Language]:
+    for lang in self.languages:
+      if lang == language:
+        return lang
 
-    return None;
+    return None
