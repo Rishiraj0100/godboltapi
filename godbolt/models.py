@@ -1,4 +1,4 @@
-import requests
+import aiohttp
 import asyncio
 
 from typing import (
@@ -21,6 +21,7 @@ LT = TypeVar('LT', bound='Language')
 
 class Route:
   BASE: str = "https://godbolt.org/api"
+  SESSION: aiohttp.ClientSession = None
 
   def __init__(self, method: str, path: str, **parameters: Any) -> None:
     self.path: str = path
@@ -44,10 +45,15 @@ class Route:
         url = url.format_map({k: uriquote(v) if isinstance(v, str) else v for k, v in parameters.items()})
     self.url: str = url
 
-  def request(self, *, json: bool = True) -> Union[dict, requests.Response]:
-    resp: requests.Response = requests.request(self.method, self.url, headers=self.headers, **self.kw)
+  async def request(self, *, session: aiohttp.ClientSession = None, json: bool = True) -> Union[dict, aiohttp.ClientResponse]:
+    if not session:
+      if not self.SESSION: self.__class__.SESSION = session = aiohttp.ClientSession()
+      else: session = self.__class__.SESSION
+    else: self.__class__.SESSION = session
+
+    resp: aiohttp.ClientResponse = await session.request(self.method, self.url, headers=self.headers, **self.kw)
     if json:
-      return resp.json()
+      return await resp.json()
 
     return resp
 
