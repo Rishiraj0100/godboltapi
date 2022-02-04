@@ -14,7 +14,7 @@ class Godbolt:
     self.__session = session
 
   async def init(self,) -> None:
-    languages = await Route('GET', "/languages", headers=self.__headers).request(self.__session)
+    languages = await Route('GET', "/languages", headers=self.__headers).request(session=self.__session)
     if not self.__session: self.__session = Route.SESSION
     for language in languages:
       self.__languages.append(Language.from_dict(language))
