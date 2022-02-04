@@ -55,6 +55,6 @@ class Godbolt:
     if stdin: data["options"]["executeParameters"]["stdin"] = stdin
     if libraries: data["libraries"] = libraries
 
-    resp = await Route('post',"/compiler/{compiler}/compile", compiler=compiler,json=data).request()
+    resp = await Route('post',"/compiler/{compiler}/compile", compiler=compiler,json=data,headers=self.__headers).request()
     try: return {"output": resp["stdout"]["text"], "error": resp["stderr"]["text"]}
     except: return resp   
