@@ -136,3 +136,7 @@ class Language:
 
   def __str__(self) -> bool:
     return self.name
+
+  def get_compiler(self, n):
+    for compiler in self.compilers:
+      if compiler["id"]==n or compiler["name"]==n: return compiler
