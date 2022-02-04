@@ -19,7 +19,7 @@ class Godbolt:
     for language in languages:
       self.__languages.append(Language.from_dict(language))
     for language in self.languages:
-      compilers = Route(
+      compilers = await Route(
         'get',
         '/compilers/{lang}',
         headers=self.__headers,
