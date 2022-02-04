@@ -50,7 +50,19 @@ class Godbolt:
       try: compiler = self.get_language(language).get_compiler(compiler)["id"]
       except: raise ValueError(f"Compiler {compiler} for language {language} not found!")
 
-    data = {"source": code,"compiler": compiler,"options": {"executeParameters": {}}}
+    data = {
+      "source": code,
+      "compiler": compiler,
+      "options": {
+        "executeParameters": {},
+        "compilerOptions": {
+          "skipAsm": True
+        },
+        "filters": {
+          "execute": True
+        }
+      }
+    }
 
     if stdin: data["options"]["executeParameters"]["stdin"] = stdin
     if libraries: data["libraries"] = libraries
