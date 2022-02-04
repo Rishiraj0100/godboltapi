@@ -57,7 +57,7 @@ class Route:
 
     return resp
 
-class LanguageStream(list):
+class LanguageStream(list, dict):
   def __init__(self, *args: Any, **kwargs: Any) -> None:
     super().__init__(*args, **kwargs)
     asyncio.get_event_loop().create_task(self.__check_integrity())
@@ -74,6 +74,10 @@ class LanguageStream(list):
       for lang in self:
         assert isinstance(lang, Language), "All attributes of this stream should be instance of Language not {lang.__class__!r}"
       await asyncio.sleep(5)
+
+  def append(self, language: "Language"):
+    self[language.name] = language
+    super().append(language)
 
 class Language:
   def __init__(self, *, id: str, name: str, extensions: List[str], monaco: str) -> None:
