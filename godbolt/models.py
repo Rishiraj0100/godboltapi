@@ -60,7 +60,6 @@ class Route:
 class LanguageStream(list):
   def __init__(self, *args: Any, **kwargs: Any) -> None:
     super().__init__(*args, **kwargs)
-    self.__dat = {}
     asyncio.get_event_loop().create_task(self.__check_integrity())
 
   def __contains__(self, other: Union[str, LT, Any]) -> bool:
@@ -75,21 +74,6 @@ class LanguageStream(list):
       for lang in self:
         assert isinstance(lang, Language), "All attributes of this stream should be instance of Language not {lang.__class__!r}"
       await asyncio.sleep(5)
-
-  def append(self, language: "Language"):
-    self[language.name] = language
-    super().append(language)
-
-  def remove(self, language):
-    if language in self:
-      del self[language.name if isinstance(language, Language) else language]
-    super().remove(language)
-
-  __getitem__ = lambda self,attr: self.__dat[attr]
-  def get(self, attr, default=None): return self.__dat.get(attr, default)
-  def __setitem__(self, k,v): return self.__dat.__setitem__(k,v)
-  def __delitem__(self,k): return self.__dat.__delitem__(k)
-
 
 class Language:
   def __init__(self, *, id: str, name: str, extensions: List[str], monaco: str) -> None:
