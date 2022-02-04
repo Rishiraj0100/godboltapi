@@ -1,17 +1,21 @@
 import types
 
 from .models import *
+from aiohttp import ClientSession as Session
 from typing import Any, Dict, List, Union, Mapping
 
 
 class Godbolt:
-  def __init__(self, headers: Dict[str, str] = {}) -> None:
+  def __init__(self, headers: Dict[str, str] = {}, session: Session = None) -> None:
+    headers = headers or {}
     headers['Accept'] = "application/json"
     self.__headers: Dict[str, str] = headers
     self.__languages: LanguageStream = LanguageStream()
+    self.__session = session
 
-  def init(self,) -> None:
-    languages = Route('GET', "/languages", headers=self.__headers).request()
+  async def init(self,) -> None:
+    languages = await Route('GET', "/languages", headers=self.__headers).request(self.__session)
+    if not self.__session: self.__session = Route.SESSION
     for language in languages:
       self.__languages.append(Language.from_dict(language))
     for language in self.languages:
