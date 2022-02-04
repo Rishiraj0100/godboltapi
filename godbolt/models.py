@@ -142,4 +142,4 @@ class Language:
 
   def get_compiler(self, n):
     for compiler in self.compilers:
-      if compiler["id"]==n or compiler["name"]==n: return compiler
+      if compiler["id"].lower()==n.lower() or compiler["name"].lower()==n.lower(): return compiler
