@@ -1,21 +1,5 @@
-try:
-  import ristpy as rist
-except ModuleNotFoundError:
-  rist = "https://github.com/RistPy/PyRist/"
-  raise RuntimeError(
-    f'Module RistPy not found. Please install it as this API is written in rist {rist}'
-  )
-
-import os
-import random
-
 from setuptools import setup
 
-
-for file in os.listdir('./godbolt/'):
-  file = 'godbolt/'+file
-  if file.endswith('.rist'):
-    rist.rist(file, flags=rist.WRITE, compile_to=file[:-4]+'py')
 
 v = "0.0.1a"
 if v.endswith(('a', 'b', 'rc')):
