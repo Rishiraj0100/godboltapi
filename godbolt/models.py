@@ -75,16 +75,50 @@ class LanguageStream(list):
   async def __check_integrity(self) -> None:
     while True:
       for lang in self:
-        assert isinstance(lang, Language), "All attributes of this stream should be instance of Language not {lang.__class__!r}"
+        if not isinstance(lang, Language): self.remove(lang)
+
       await asyncio.sleep(5)
 
+  def append(self, item) -> None:
+    if isinstance(item, Language): super().append(item)
+    elif isinstance(item, dict): super().append(Language.from_dict(item))
+
+
+class Library:
+  __slots__ = ("name","id","url")
+
+  # versions: List[LibraryVersion] = []
+
+  @classmethod
+  def from_dict(cls, d):
+    self=cls()
+    for slot in cls.__slots__:setattr(self,slot,d[slot])
+    # for version in d["versions"]: self.versions.append(LibraryVersion.from_dict(version))
+    return self
+
+class Compiler:
+  __slots__ = ("name","id")
+  lang: LT
+  alias: List[str] = []
+
+  @classmethod
+  def from_dict(cls, d):
+    self=cls()
+    for slot in cls.__slots__:setattr(self,slot,d[slot])
+    for alias in d["alias"]: self.alias.append(alias)
+    self.lang = d["lang"]
+    return self
+
+
 class Language:
-  def __init__(self, *, id: str, name: str, extensions: List[str], monaco: str) -> None:
+  def __init__(self, *, id: str, name: str, extensions: List[str], monaco: str, default_compiler: str) -> None:
     self.__id: str                 =           id
     self.__name: str               =          name
     self.__monaco: str             =        monaco
     self.__extensions: List[str]   =    extensions
-    self.compilers = []
+    self.compilers: List[Compiler] = []
+    self.libraries: List[Library]  = []
+    self.default_compiler = default_compiler
 
   @property
   def id(self) -> str:
@@ -108,16 +142,17 @@ class Language:
       id=d['id'],
       name=d["name"],
       extensions=d["extensions"],
-      monaco=d["monaco"]
+      monaco=d["monaco"],
+      default_compiler=d["defaultCompiler"]
     )
 
     return self
 
   def to_dict(self) -> dict:
-    attrs: List[str] = ["extensions", "id", "name", "monaco"]
+    attrs: List[str] = ["extensions", "id", "name", "monaco","defaultCompiler"]
     ret: dict = {}
     for attr in attrs:
-      ret[attr] = eval('self.{attr}'.format(attr=attr))
+      ret[attr] = eval('self.{attr}'.format(attr=(attr if not attr.startswith("def") else "default_compiler")))
 
     return dict
 
@@ -143,3 +178,11 @@ class Language:
   def get_compiler(self, n):
     for compiler in self.compilers:
       if compiler["id"].lower()==n.lower() or compiler["name"].lower()==n.lower(): return compiler
+
+  def get_library(self, n):
+    for lib in self.libraries:
+      if lib.name.lower()==n.lower() or lib.id.lower()==n.lower(): return lib
+
+  def add_compiler(self, d):
+    d["lang"] = self
+    self.compilers.append(Compiler.from_dict(d))
