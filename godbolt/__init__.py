@@ -14,10 +14,18 @@ class Godbolt:
     self.__session = session
 
   async def init(self,) -> None:
-    languages = await Route('GET', "/languages", headers=self.__headers).request(session=self.__session)
+    languages = await Route(
+      'GET',
+      "/languages?fields={fields}",
+      headers=self.__headers,
+      fields="id,name,extensions,monaco,defaultCompiler"
+    ).request(session=self.__session)
+
     if not self.__session: self.__session = Route.SESSION
+
     for language in languages:
       self.__languages.append(Language.from_dict(language))
+
     for language in self.languages:
       compilers = await Route(
         'get',
@@ -30,7 +38,7 @@ class Godbolt:
 
   @property
   def languages(self) -> LanguageStream:
-    return self.__languages.copy()
+    return self.__languages
 
   @property
   def headers(self) -> Mapping[str, str]:
