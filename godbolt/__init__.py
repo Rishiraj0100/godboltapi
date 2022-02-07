@@ -1,3 +1,4 @@
+import sys
 import types
 
 from .models import *
@@ -5,10 +6,17 @@ from aiohttp import ClientSession as Session
 from typing import Any, Dict, List, Union, Mapping
 
 
+
 class Godbolt:
   def __init__(self, headers: Dict[str, str] = {}, session: Session = None) -> None:
     headers = headers or {}
+    py_version = ".".join([str(i) for i in tuple(sys.version_info)])
+    if "final" in py_version: py_version=".".join(py_version.split(".")[:3]
+    py_version=py_version.replace("alpha.","a").replace("beta.","b").replace("candidate.","rc")
+
     headers['Accept'] = "application/json"
+    headers['User-Agent'] = f"GodboltApi-Python-module/1.0b (Rishiraj0100) CPython/{py_version}"
+
     self.__headers: Dict[str, str] = headers
     self.__languages: LanguageStream = LanguageStream()
     self.__session = session
