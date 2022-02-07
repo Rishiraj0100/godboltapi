@@ -84,31 +84,46 @@ class LanguageStream(list):
     elif isinstance(item, dict): super().append(Language.from_dict(item))
 
 
+class LibraryVersion(dict):
+  __slots__ = ("version","alias","dependencies","path","libpath","options","staticliblink","id")
+
+  description: str = None
+
+  @classmethod
+  def from_dict(cls, d):
+    self = cls(id=d["id"],version=d["version"])
+    for slot in cls.__slots__:setattr(self,slot,d[slot])
+    if "description" in d: self.description = d["description"]
+    return self
+
 class Library:
   __slots__ = ("name","id","url")
 
-  # versions: List[LibraryVersion] = []
+  versions: List[LibraryVersion] = []
 
   @classmethod
   def from_dict(cls, d):
     self=cls()
     for slot in cls.__slots__:setattr(self,slot,d[slot])
-    # for version in d["versions"]: self.versions.append(LibraryVersion.from_dict(version))
+    for version in d["versions"]: self.versions.append(LibraryVersion.from_dict(version))
     return self
 
-class Compiler:
+  def get_version(self, n):
+    for version in self.versions:
+      if version.id.lower()==n.lower(): return version
+
+class Compiler(str):
   __slots__ = ("name","id")
   lang: LT
   alias: List[str] = []
 
   @classmethod
   def from_dict(cls, d):
-    self=cls()
+    self=cls(d["name"])
     for slot in cls.__slots__:setattr(self,slot,d[slot])
     for alias in d["alias"]: self.alias.append(alias)
     self.lang = d["lang"]
     return self
-
 
 class Language:
   def __init__(self, *, id: str, name: str, extensions: List[str], monaco: str, default_compiler: str) -> None:
@@ -177,7 +192,7 @@ class Language:
 
   def get_compiler(self, n):
     for compiler in self.compilers:
-      if compiler["id"].lower()==n.lower() or compiler["name"].lower()==n.lower(): return compiler
+      if compiler.id.lower()==n.lower() or compiler.name.lower()==n.lower(): return compiler
 
   def get_library(self, n):
     for lib in self.libraries:
