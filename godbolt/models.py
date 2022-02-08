@@ -116,7 +116,8 @@ class Library:
       if version.id.lower()==n.lower(): return version
 
 class Compiler(str):
-  __slots__ = ("name","id","lang","alias")
+  __slots__ = ("name","id","lang")
+  alias: List[str] = []
 
   @classmethod
   def from_dict(cls, d):
