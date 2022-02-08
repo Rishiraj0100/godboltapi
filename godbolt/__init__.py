@@ -2,8 +2,8 @@ import sys
 import types
 import aiohttp
 
-from .cont import *
 from .models import *
+from .cont import __version__, __author__
 from aiohttp import ClientSession as Session
 from typing import Any, Dict, List, Union, Mapping
 
