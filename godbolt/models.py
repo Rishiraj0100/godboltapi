@@ -13,8 +13,11 @@ from urllib.parse import quote as uriquote
 
 __all__ = (
   "Route",
+  "Library",
+  "Compiler",
   "Language",
-  "LanguageStream"
+  "LanguageStream",
+  "LibraryVersion"
 )
 
 LT = TypeVar('LT', bound='Language')
