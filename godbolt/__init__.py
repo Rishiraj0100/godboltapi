@@ -39,7 +39,7 @@ class Godbolt:
     for language in self.languages:
       compilers = await Route(
         'get',
-        '/compilers/{lang}',
+        '/compilers/{lang}?fields=id,name,lang,alias',
         headers=self.__headers,
         lang=language.id
       ).request()
@@ -70,7 +70,7 @@ class Godbolt:
 
   async def execute(self, code: str, language=None, compiler=None, stdin = None, libraries: List[Dict[str, str]]=[],):
     if not language and not compiler: compiler, language = self.get_language('python').compilers[0]["id"],"python"
-    elif not compiler: compiler = self.get_language(language).compilers[0]["id"]
+    elif not compiler: compiler = self.get_language(language).default_compiler
     elif language and compiler:
       try: compiler = self.get_language(language).get_compiler(compiler)["id"]
       except: raise ValueError(f"Compiler {compiler} for language {language} not found!")
