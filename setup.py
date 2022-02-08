@@ -1,7 +1,7 @@
 from setuptools import setup
+from godbolt.cont import __version__ as v
 
 
-v = "0.0.1a"
 if v.endswith(('a', 'b', 'rc')):
     # append version identifier based on commit count
     try:
