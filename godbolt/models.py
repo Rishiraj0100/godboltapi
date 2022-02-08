@@ -117,7 +117,7 @@ class Library:
 
 class Compiler(str):
   __slots__ = ("name","id")
-  lang: LT
+  lang: LT = None
   alias: List[str] = []
 
   @classmethod
