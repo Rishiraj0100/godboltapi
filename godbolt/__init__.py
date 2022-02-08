@@ -17,7 +17,7 @@ class Godbolt:
     py_version=py_version.replace(".alpha.","a").replace(".beta.","b").replace(".candidate.","rc")
 
     headers['Accept'] = "application/json"
-    headers['User-Agent'] = f"GodboltApi-Python-module/1.0a (Rishiraj0100) Python/{py_version} aiohttp/{aiohttp.__version__} (A Python module for http requests; asynchronous)"
+    headers['User-Agent'] = f"GodboltApi-Python-module/{__version__} (by Rishiraj0100;OpenSrc) Python/{py_version} aiohttp/{aiohttp.__version__} (A Python module for http requests; asynchronous)"
 
     self.__headers: Dict[str, str] = headers
     self.__languages: LanguageStream = LanguageStream()
