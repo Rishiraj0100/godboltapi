@@ -1,6 +1,8 @@
 import sys
 import types
+import aiohttp
 
+from .cont import *
 from .models import *
 from aiohttp import ClientSession as Session
 from typing import Any, Dict, List, Union, Mapping
@@ -11,11 +13,11 @@ class Godbolt:
   def __init__(self, headers: Dict[str, str] = {}, session: Session = None) -> None:
     headers = headers or {}
     py_version = ".".join([str(i) for i in tuple(sys.version_info)])
-    if "final" in py_version: py_version=".".join(py_version.split(".")[:3]
-    py_version=py_version.replace("alpha.","a").replace("beta.","b").replace("candidate.","rc")
+    if "final" in py_version: py_version=".".join(py_version.split(".")[:3])
+    py_version=py_version.replace(".alpha.","a").replace(".beta.","b").replace(".candidate.","rc")
 
     headers['Accept'] = "application/json"
-    headers['User-Agent'] = f"GodboltApi-Python-module/1.0b (Rishiraj0100) CPython/{py_version}"
+    headers['User-Agent'] = f"GodboltApi-Python-module/1.0a (Rishiraj0100) Python/{py_version} aiohttp/{aiohttp.__version__} (A Python module for http requests; asynchronous)"
 
     self.__headers: Dict[str, str] = headers
     self.__languages: LanguageStream = LanguageStream()
@@ -32,7 +34,7 @@ class Godbolt:
     if not self.__session: self.__session = Route.SESSION
 
     for language in languages:
-      self.__languages.append(Language.from_dict(language))
+      self.__languages.append(language)
 
     for language in self.languages:
       compilers = await Route(
@@ -42,7 +44,14 @@ class Godbolt:
         lang=language.id
       ).request()
       for compiler in compilers:
-        language.compilers.append(compiler)
+        language.add_compiler(compiler)
+
+      libs = await Route(
+        "Get",
+        f"/libraries/{language.id}",
+        headers=self.__headers
+      ).request()
+      for lib in libs: language.libraries.append(Library.from_dict(lib))
 
   @property
   def languages(self) -> LanguageStream:
