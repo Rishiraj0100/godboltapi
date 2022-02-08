@@ -48,7 +48,7 @@ class Godbolt:
 
       libs = await Route(
         "Get",
-        f"/libraries/{language.id}",
+        f"/libraries/{language.id}?fields=id,url,name,versions",
         headers=self.__headers
       ).request()
       for lib in libs: language.libraries.append(Library.from_dict(lib))
