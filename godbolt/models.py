@@ -100,16 +100,14 @@ class LibraryVersion(dict):
     return self
 
 class Library:
-  __slots__ = ("name","id",)
+  __slots__ = ("name","id","url",)
 
-  url: str = None
   versions: List[LibraryVersion] = []
 
   @classmethod
   def from_dict(cls, d):
     self=cls()
-    for slot in cls.__slots__:setattr(self,slot,d[slot])
-    if "url" in d: self.url = d["url"]
+    for slot in cls.__slots__:setattr(self,slot,d.get(slot))
     for version in d["versions"]: self.versions.append(LibraryVersion.from_dict(version))
     return self
 
