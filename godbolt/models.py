@@ -203,17 +203,36 @@ class Language:
   def add_compiler(self, d):
     d["lang"] = self
     self.compilers.append(Compiler.from_dict(d))
-"""
+
 class GodboltResponse:
   code: int
   did_execute: Optional[bool]
-  buildResult: Optional[dict]
-  execTime: Optional[str]
+  build_result: Optional[dict]
+  execution_time: Optional[str]
   stdout: List[dict]
   stderr: List[dict]
-  asmSize: Optional[int]
-  asmResult: Optional[List[dict]]
+  asm_size: Optional[int]
+  asm_result: Optional[List[dict]]
   slots = {
     "code": [],
-    "didExecute": ["did_execute", True],"build_result","execution_time","stdout","stderr","asm_size","asm_result"}
-"""
+    "didExecute": ["did_execute", True, bool], # name_in_attr, optional, type
+    "buildResult": ["build_result", True],
+    "execTime": ["execution_time", True, str],
+    "stdout": [],
+    "stderr": [],
+    "asm_size": ["asmSize", True],
+    "asm_result": ["asmResult", True]
+  }
+
+  @classmethod
+  def from_dict(cls,d):
+    self = cls()
+    for n, slotv in self.slots.items():
+      ren = n
+      meth = lambda d: d
+      if not slotv: setattr(self, ren, d[n]); continue
+      if isinstance(slotv[0], str): ren = slotv[0]
+      if callable(slotv[-1]): meth=slotv[-1]
+      if len(slotv) in [1,2] and True in slotv: setattr(self, ren, meth(d.get(n))); continue
+
+    return self
