@@ -203,3 +203,17 @@ class Language:
   def add_compiler(self, d):
     d["lang"] = self
     self.compilers.append(Compiler.from_dict(d))
+"""
+class GodboltResponse:
+  code: int
+  did_execute: Optional[bool]
+  buildResult: Optional[dict]
+  execTime: Optional[str]
+  stdout: List[dict]
+  stderr: List[dict]
+  asmSize: Optional[int]
+  asmResult: Optional[List[dict]]
+  slots = {
+    "code": [],
+    "didExecute": ["did_execute", True],"build_result","execution_time","stdout","stderr","asm_size","asm_result"}
+"""
