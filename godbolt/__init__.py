@@ -51,9 +51,7 @@ class Godbolt:
         f"/libraries/{language.id}?fields=id,url,name,versions",
         headers=self.__headers
       ).request()
-      for lib in libs:
-        try: language.libraries.append(Library.from_dict(lib))
-        except: return lib, language
+      for lib in libs: language.libraries.append(Library.from_dict(lib))
 
   @property
   def languages(self) -> LanguageStream:
