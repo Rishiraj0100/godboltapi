@@ -69,8 +69,8 @@ class Godbolt:
     return None
 
   async def execute(self, code: str, language=None, compiler=None, stdin = None, libraries: List[LibraryVersion]=[],):
-    if not language and not compiler: compiler, language = self.get_language('python').default_compiler.id
-    elif not compiler: compiler = self.get_language(language).default_compiler.id
+    if not language and not compiler: compiler, language = self.get_language('python').default_compiler
+    elif not compiler: compiler = self.get_language(language).default_compiler
     elif language and compiler:
       try: compiler = self.get_language(language).get_compiler(compiler).id
       except: raise ValueError(f"Compiler {compiler} for language {language} not found!")
